@@ -1,15 +1,5 @@
 import { Client } from "pg";
 
-function getSSLValues() {
-  if (process.env.PGSSLMODE === "require") {
-    return {
-      rejectUnauthorized: true,
-    };
-  }
-
-  return process.env.NODE_ENV === "production" ? true : false;
-}
-
 async function query(queryObject) {
   const client = new Client({
     user: process.env.POSTGRES_USER,
@@ -17,7 +7,7 @@ async function query(queryObject) {
     port: process.env.POSTGRES_PORT,
     host: process.env.POSTGRES_HOST,
     password: process.env.POSTGRES_PASSWORD,
-    ssl: getSSLValues(),
+    ssl: process.env.NODE_ENV === "development" ? false : true,
   });
 
   try {
